@@ -1,0 +1,15 @@
+<resources>
+    <string name="web_service_url">http://08309.net.dcs.hull.ac.uk/api/admin/</string>
+	
+	<!-- GET requests -->
+	<string name="register_user">register?</string>
+	<string name="unregister_user">unregister?</string>
+	<string name="change_password">change?</string>
+	<string name="full_details">details?</string>
+	<string name="task_history">taskhistory?</string>
+	<string name="drink_diary">diary?</string>
+	
+	<!-- POST requests -->
+	<string name="task">task</string>
+	<string name="drink">drink</string>
+</resources>
