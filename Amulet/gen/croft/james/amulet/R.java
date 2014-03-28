@@ -66,16 +66,16 @@ public final class R {
         public static final int action_sign_in_short=0x7f05000d;
         public static final int app_name=0x7f050000;
         public static final int app_not_available=0x7f050005;
-        public static final int change_password=0x7f050017;
+        public static final int change_password=0x7f050018;
         public static final int drawer_close=0x7f050004;
         public static final int drawer_open=0x7f050003;
-        public static final int drink=0x7f05001c;
-        public static final int drink_diary=0x7f05001a;
-        public static final int error_field_required=0x7f050013;
-        public static final int error_incorrect_password=0x7f050012;
-        public static final int error_invalid_email=0x7f050010;
-        public static final int error_invalid_password=0x7f050011;
-        public static final int full_details=0x7f050018;
+        public static final int drink=0x7f05001d;
+        public static final int drink_diary=0x7f05001b;
+        public static final int error_field_required=0x7f050014;
+        public static final int error_incorrect_password=0x7f050013;
+        public static final int error_invalid_email=0x7f050011;
+        public static final int error_invalid_password=0x7f050012;
+        public static final int full_details=0x7f050019;
         public static final int hello_world=0x7f050002;
         public static final int login_progress_signing_in=0x7f05000f;
         /**  Strings related to login 
@@ -84,16 +84,17 @@ public final class R {
         public static final int prompt_first_name=0x7f050008;
         public static final int prompt_password=0x7f05000a;
         public static final int prompt_surname=0x7f050009;
+        public static final int register_progress_registering=0x7f050010;
         /**  GET requests 
          */
-        public static final int register_user=0x7f050015;
+        public static final int register_user=0x7f050016;
         /**  POST requests 
          */
-        public static final int task=0x7f05001b;
-        public static final int task_history=0x7f050019;
+        public static final int task=0x7f05001c;
+        public static final int task_history=0x7f05001a;
         public static final int title_activity_login=0x7f050006;
-        public static final int unregister_user=0x7f050016;
-        public static final int web_service_url=0x7f050014;
+        public static final int unregister_user=0x7f050017;
+        public static final int web_service_url=0x7f050015;
     }
     public static final class style {
         /** 

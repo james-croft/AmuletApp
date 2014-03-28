@@ -1,12 +1,11 @@
 package croft.james.amulet;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class LoginActivity extends Activity implements OnRetrieveDataCompleted {	
@@ -32,6 +31,20 @@ public class LoginActivity extends Activity implements OnRetrieveDataCompleted {
 				View registerForm = findViewById(R.id.register_form);
 				_currentView = registerForm;
 				showForm(registerForm, true);
+			}
+		});
+		
+		findViewById(R.id.login_user_button).setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				loginUser();
+			}
+		});
+		
+		findViewById(R.id.register_user_button).setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				registerUser();
 			}
 		});
 	}
@@ -73,7 +86,23 @@ public class LoginActivity extends Activity implements OnRetrieveDataCompleted {
 	
 	private void loginUser(){
 		Toast.makeText(this, getString(R.string.login_progress_signing_in), Toast.LENGTH_LONG).show();
+		
+		String username = ((EditText)findViewById(R.id.username)).getText().toString();
+		String password = ((EditText)findViewById(R.id.password)).getText().toString();
+		
 		RetrieveHTTPDataAsync loginData = new RetrieveHTTPDataAsync(this);
-		loginData.execute(getString(R.string.web_service_url) + getString(R.string.register_user));
+		loginData.execute(getString(R.string.web_service_url) + getString(R.string.full_details) + String.format("username=%1$s&password=%2$s", username, password));
+	}
+	
+	private void registerUser(){
+		Toast.makeText(this, getString(R.string.register_progress_registering), Toast.LENGTH_LONG).show();
+		
+		String firstName = ((EditText)findViewById(R.id.first_name)).getText().toString();
+		String surname = ((EditText)findViewById(R.id.surname)).getText().toString();
+		String username = ((EditText)findViewById(R.id.email)).getText().toString();
+		String password = ((EditText)findViewById(R.id.register_password)).getText().toString();
+		
+		RetrieveHTTPDataAsync loginData = new RetrieveHTTPDataAsync(this);
+		loginData.execute(getString(R.string.web_service_url) + getString(R.string.register_user) + String.format("firstname=%1$s&Surname=%2$s&username=%3$s&password=%4$s", firstName, surname, username, password));
 	}
 }
