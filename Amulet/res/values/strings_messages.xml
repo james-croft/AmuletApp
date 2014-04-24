@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="server_error">An error occurred when accessing the server</string>
+    <string name="saving_task_baseline">Saving calibration data</string>
+    <string name="task_calibration_error">This task needs calibrating</string>
+
+</resources>

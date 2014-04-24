@@ -1,5 +1,5 @@
 package croft.james.amulet;
 
 public interface OnRetrieveDataCompleted {
-	void onTaskCompleted(String responseData);
+	void onTaskCompleted(String response);
 }

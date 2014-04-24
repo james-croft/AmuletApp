@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:rowCount="2"
+        android:useDefaultMargins="true" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center|top"
+            android:layout_row="0"
+            android:contentDescription="Launcher Image"
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_row="1"
+            android:text="Welcome to Amulet!" />
+    </GridLayout>
+
+    <ScrollView
+        android:id="@+id/task_selection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:orientation="vertical"
+            android:rowCount="2"
+            android:useDefaultMargins="true" >
+
+            <Button
+                android:id="@+id/inspection_task_button"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_row="0"
+                android:background="#fff6733a"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:text="Inspection Task"
+                android:textColor="#ffffffff" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_row="1" >
+
+                <Button
+                    android:id="@+id/sequence_task_button"
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_weight="0.8"
+                    android:background="#fff6733a"
+                    android:paddingLeft="32dp"
+                    android:paddingRight="32dp"
+                    android:text="Sequence Task"
+                    android:textColor="#ffffffff" />
+
+                <Space
+                    android:id="@+id/gap"
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_weight="0.03"
+                    android:paddingLeft="32dp"
+                    android:paddingRight="32dp" />
+
+                <Button
+                    android:id="@+id/pilot_task_button"
+                    android:layout_width="0dp"
+                    android:layout_height="140dp"
+                    android:layout_weight="0.8"
+                    android:background="#fff6733a"
+                    android:paddingLeft="32dp"
+                    android:paddingRight="32dp"
+                    android:text="Pilot Task"
+                    android:textColor="#ffffffff" />
+            </LinearLayout>
+        </GridLayout>
+    </ScrollView>
+
+</LinearLayout>
