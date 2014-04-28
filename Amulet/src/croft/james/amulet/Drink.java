@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,22 +13,37 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.util.Log;
 
-public class Task {
-	public String TaskType;
+public class Drink {
+	public String Name;
+	public String Quantity;
 	public String TimeStamp;
-	public String Result;
-	public String Units;
 
-	private JSONArray currentLocalTasks;
+	private JSONArray currentDrinks;
+
+	public Drink() {
+
+	}
+
+	/**
+	 * Creates a new Drink object. 
+	 *
+	 * @param name - the name of the drink. 
+	 * @param quantity - the number of drinks.
+	 * @param timestamp - time the drinks were recorded.
+	 */
+	public Drink(String name, String quantity, String timestamp) {
+		Name = name;
+		Quantity = quantity;
+		TimeStamp = timestamp;
+	}
 
 	public JSONObject toJsonObject() {
 		JSONObject returnObj = new JSONObject();
 
 		try {
-			returnObj.put("tasktype", TaskType);
 			returnObj.put("timestamp", TimeStamp);
-			returnObj.put("taskvalue", Result);
-			returnObj.put("unitsconsumed", Units);
+			returnObj.put("drinktype", Name);
+			returnObj.put("unitsconsumed", Quantity);
 		} catch(Exception e) {
 			Log.e("log_tag", "Error in generating JSONObject " + e.toString());
 		}
@@ -37,20 +54,20 @@ public class Task {
 	public void saveLocal(Context context, String filename) {
 		JSONObject json = toJsonObject();
 
-		currentLocalTasks = loadStateFromFileStream(context, filename + ".json");
+		currentDrinks = loadStateFromFileStream(context, filename + ".json");
 
 		outputToFileStream(context, json, filename + ".json");
 	}
 
 	/**
-	 * Gets the JSONArray of tasks from a tasktype's local store. 
+	 * Gets the JSONArray of tasks from a drink's local store. 
 	 *
 	 * @param context - the current Activity context. 
 	 * @param filename - the name of the file excluding file extension.
 	 */
 	public JSONArray loadLocal(Context context, String filename) {
-		currentLocalTasks = loadStateFromFileStream(context, filename + ".json");
-		return currentLocalTasks;
+		currentDrinks = loadStateFromFileStream(context, filename + ".json");
+		return currentDrinks;
 	}
 
 	private JSONArray loadStateFromFileStream(Context context, String fileName) {
@@ -110,20 +127,35 @@ public class Task {
 
 	public void outputToFileStream(FileOutputStream outputFileStream, Context context, JSONObject jsonObject, String fileName) {
 
-		if(currentLocalTasks == null) {
-			currentLocalTasks = new JSONArray();
+		if(currentDrinks == null) {
+			currentDrinks = new JSONArray();
 		}
-		
-		currentLocalTasks.put(jsonObject);
+
+		currentDrinks.put(jsonObject);
 
 		try {
-			outputFileStream.write(currentLocalTasks.toString().getBytes());
+			outputFileStream.write(currentDrinks.toString().getBytes());
 		} catch (Exception e) {
 			Log.e("log_tag", "Error in saving file " + e.toString());
 		}
 	}
 
+	@Override
 	public String toString() {
+		String dateString  = "";
+		
+		try {
+			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy, HH:mm:ss");
+			dateString= formatter.format(TimeStamp);
+		} catch (Exception e) {
+			Log.e("log_tag", "Error parsing TimeStamp " + e.toString());
+			dateString = TimeStamp;
+		}
+
+		return String.format("%1$s - Quantity: %2$s - Recorded: %3$s", Name, Quantity, dateString);
+	}
+
+	public String toJsonString() {
 		JSONObject json = toJsonObject();
 		return json.toString();
 	}

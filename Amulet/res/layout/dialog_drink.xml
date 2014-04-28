@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/drink_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/drink_name_hint"
+        android:inputType="text"
+        android:maxLines="1"
+        android:singleLine="true" />
+
+    <EditText 
+        android:id="@+id/drink_quantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/drink_quantity_hint"
+        android:inputType="number"
+        android:maxLines="1"
+        android:singleLine="true"/>
+
+</LinearLayout>

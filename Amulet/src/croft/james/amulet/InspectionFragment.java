@@ -1,6 +1,10 @@
 package croft.james.amulet;
 
+import java.text.SimpleDateFormat;
 import java.util.Random;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -37,12 +41,15 @@ public class InspectionFragment extends Fragment {
 	private class InspectionDrawView extends View implements OnRetrieveDataCompleted {
 		Context _context;
 
-		String timerText = "";
+		Task inspectionTask;
+
+		String timerText = "", drinkQuantity = "";
 		int parentWidth, parentHeight; // width & height of fragment
 		float length1, length2; // length of two bars
-		boolean isCalibration, hasLengths, isCovered, selectionMade, isFinished, incorrectAnswer;
+		boolean isCalibration, hasLengths, isCovered, selectionMade, isFinished, incorrectAnswer, correctAnswer;
 		Rect overlay;
 		Paint strokePaint, textPaint, coverPaint;
+		InspectionDrawView view;
 
 		CanvasButton startBtn, calibBtn, cover1Btn, cover2Btn;
 
@@ -58,11 +65,13 @@ public class InspectionFragment extends Fragment {
 		public InspectionDrawView(Context context) {
 			super(context);
 
+			view = this;
+
 			_context = context;
 
 			strokePaint = textPaint = coverPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			state = TaskState.selection;
-			isCalibration = isCovered = selectionMade = isFinished = incorrectAnswer = false;
+			isCalibration = isCovered = selectionMade = isFinished = incorrectAnswer = correctAnswer = false;
 			inspectionTime = 2000;
 
 			String InspectionBase = SharedPreferencesWrapper.getPref(_context, "InspectionBase", null);
@@ -80,6 +89,7 @@ public class InspectionFragment extends Fragment {
 
 		private void setupTimeHandler() {
 			time = 0;
+			init = -1;
 
 			timeUpdater = new Runnable() {
 
@@ -186,7 +196,9 @@ public class InspectionFragment extends Fragment {
 		}
 
 		private void startTimeHandler() {
-			init = System.currentTimeMillis();
+			if (init == -1) {
+				init = System.currentTimeMillis();
+			}
 			timeHandler.post(timeUpdater);
 		}
 
@@ -308,6 +320,7 @@ public class InspectionFragment extends Fragment {
 								// if a button has been pressed and it is the right answer
 								if((cover1Btn.contains(x, y) && longest == length1) || (cover2Btn.contains(x, y) && longest == length2)) {
 									timerText = "correct";
+									correctAnswer = true;
 
 									if(incorrectAnswer){
 										timerText = "finished";
@@ -320,13 +333,18 @@ public class InspectionFragment extends Fragment {
 										isFinished = true;
 									}
 								} else {
-									timerText = "";
-									incorrectAnswer = true;
+									if(correctAnswer) {
+										timerText = "finished";
+										isFinished = true;
+									} else {
+										timerText = "";
+										incorrectAnswer = true;
 
-									Random r = new Random();
+										Random r = new Random();
 
-									int increment = r.nextInt(20 - 10) + 10; 
-									inspectionTime = inspectionTime + increment;
+										int increment = r.nextInt(20 - 10) + 10; 
+										inspectionTime = inspectionTime + increment;
+									}
 								}
 							}
 
@@ -341,31 +359,51 @@ public class InspectionFragment extends Fragment {
 									SharedPreferencesWrapper.savePref(_context, "InspectionBase", String.valueOf(inspectionTime));
 								}  else {
 									AlertDialog.Builder alert = new AlertDialog.Builder(_context);
-									final String drinkQuantity = "";
-
 									alert.setTitle(R.string.drink_prompt_title);
 									alert.setMessage(R.string.drink_prompt_message);
-									
+
 									// Set an EditText view to get user input 
 									final EditText input = new EditText(_context);
 									alert.setView(input);
 
-									alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+									alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
 										public void onClick(DialogInterface dialog, int whichButton) {
 											drinkQuantity = input.getText().toString();
-											// Do something with value!
-										}
-									});
 
-									alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-										public void onClick(DialogInterface dialog, int whichButton) {
-											// Canceled.
+											inspectionTask = new Task();
+											inspectionTask.TaskType = "inspection";
+											inspectionTask.Result = String.valueOf(inspectionTime);
+
+											SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+											String dateString = formatter.format(new java.util.Date());
+
+											inspectionTask.TimeStamp = dateString;
+											inspectionTask.Units = drinkQuantity;
+
+											JSONObject sendObject = new JSONObject();
+											JSONArray taskArray = inspectionTask.loadLocal(_context, "inspection");			
+											taskArray.put(inspectionTask.toJsonObject());
+
+											String username = SharedPreferencesWrapper.getPref(_context, "Username", "");
+											String password = SharedPreferencesWrapper.getPref(_context, "Password", "");
+
+											try {
+												sendObject.put("username", username);
+												sendObject.put("password", password);
+												sendObject.put("tasks", taskArray);
+											} catch (Exception ex) {
+												Log.e("log_tag", "Error in JSONObject generation " + ex.toString());
+											}
+
+											// Send or store									
+											SendHTTPDataAsync loginData = new SendHTTPDataAsync(getActivity(), view);
+											loginData.execute(getString(R.string.web_service_url) + getString(R.string.task), sendObject.toString());
 										}
 									});
 
 									alert.show();
-									// Ask for drink numbers
-									// Send or store
+
+
 								}								
 							}
 						}
@@ -408,8 +446,17 @@ public class InspectionFragment extends Fragment {
 
 		@Override
 		public void onTaskCompleted(String response) {
-			// TODO Auto-generated method stub
 
+			if(response == "") {
+				inspectionTask.saveLocal(_context, "inspection");
+				Toast.makeText(_context, "Couldn't send to server", Toast.LENGTH_LONG).show();
+				Toast.makeText(_context, "Stored locally", Toast.LENGTH_LONG).show();
+			} else {
+				inspectionTask.clearLocal(_context, "inspection");
+				Toast.makeText(_context, response, Toast.LENGTH_LONG).show();
+			}
+
+			getFragmentManager().popBackStackImmediate();
 		}
 	}
 }

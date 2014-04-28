@@ -10,8 +10,13 @@
     <string name="drawer_close">Close</string>
     <string name="inspection_task">Choose the longer line</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
+    <string name="drink_name_hint">Name of drink</string>
+    <string name="drink_quantity_hint">Number of drinks</string>
+
     <string-array name="menu_items">
         <item name="home">Home</item>
+        <item name="record_drink">Record drink</item>
+        <item name="view_drink_diary">View Drink Diary</item>
     </string-array>
 
 </resources>

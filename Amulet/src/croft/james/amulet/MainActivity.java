@@ -1,21 +1,32 @@
 package croft.james.amulet;
 
+import java.text.SimpleDateFormat;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnRetrieveDataCompleted {
 
 	private DrawerLayout _drawerLayout;
 	private ListView _drawerList;
@@ -24,6 +35,7 @@ public class MainActivity extends Activity {
 	private CharSequence _drawerTitle;
 	private String[] _menuItems;
 	private Fragment fragment = null;
+	private Drink drinkRecord = new Drink();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -133,28 +145,114 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	private void recordDrink() {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle(R.string.drink_prompt_title);
+		alert.setMessage(R.string.drink_prompt_message);
+
+		final View drinkDialog = View.inflate(this, R.layout.dialog_drink, null);
+
+		final MainActivity activity = this;
+
+		alert.setView(drinkDialog);
+
+		alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				EditText drinkNameText = (EditText)drinkDialog.findViewById(R.id.drink_name);
+				String drinkName = drinkNameText.getText().toString();
+
+				EditText drinkQuantityText = (EditText)drinkDialog.findViewById(R.id.drink_quantity);
+				String drinkQuantity = drinkQuantityText.getText().toString();
+
+				drinkRecord = new Drink();
+				drinkRecord.Name = drinkName;
+				drinkRecord.Quantity = drinkQuantity;
+
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				String dateString = formatter.format(new java.util.Date());
+
+				drinkRecord.TimeStamp = dateString;
+
+				JSONObject sendObject = new JSONObject();
+				JSONArray drinkArray = drinkRecord.loadLocal(activity, "drink");			
+				drinkArray.put(drinkRecord.toJsonObject());
+
+				String username = SharedPreferencesWrapper.getPref(activity, "Username", "");
+				String password = SharedPreferencesWrapper.getPref(activity, "Password", "");
+
+				try {
+					sendObject.put("username", username);
+					sendObject.put("password", password);
+					sendObject.put("entries", drinkArray);
+				} catch (Exception ex) {
+					Log.e("log_tag", "Error in JSONObject generation " + ex.toString());
+				}
+
+				// Send or store									
+				SendHTTPDataAsync loginData = new SendHTTPDataAsync(activity, activity);
+				loginData.execute(getString(R.string.web_service_url) + getString(R.string.drink), sendObject.toString());
+				_drawerLayout.closeDrawer(_drawerList);
+			}
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+				_drawerLayout.closeDrawer(_drawerList);
+			}
+		});
+
+		alert.show();
+	}
+
 	private void selectItem(int pos){
+		boolean loadFragment = false;
 		switch(pos) {
 		case 0:
 			fragment = new HomeFragment();
+			loadFragment = true;			
+			break;
+		case 1:
+			recordDrink();
+			break;
+		case 2:
+			fragment = new DrinkDiaryFragment();
+			loadFragment = true;
 			break;
 		}
 
-		Bundle args = new Bundle();
-		args.putInt("fragment_number", pos);
-		fragment.setArguments(args);
+		if(loadFragment) {
+			Bundle args = new Bundle();
+			args.putInt("fragment_number", pos);
+			fragment.setArguments(args);
 
-		FragmentManager fragmentManager = getFragmentManager();
-		
-		if(pos != 0) {
-			fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack("fragment_number").commit();
-		} else {
-			fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+			FragmentManager fragmentManager = getFragmentManager();
+
+			if(pos != 0) {
+				fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack("fragment_number").commit();
+			} else {
+				fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+			}
+
+
+			_drawerList.setItemChecked(pos, true);
+			setTitle(_menuItems[pos]);
+			_drawerLayout.closeDrawer(_drawerList);
 		}
+	}
 
-		_drawerList.setItemChecked(pos, true);
-		setTitle(_menuItems[pos]);
-		_drawerLayout.closeDrawer(_drawerList);
+	@Override
+	public void onTaskCompleted(String response) {
+
+		if(response == "") {
+			drinkRecord.saveLocal(this, "drink");
+			Toast.makeText(this, "Couldn't send to server", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Stored locally", Toast.LENGTH_LONG).show();
+		} else {
+			drinkRecord.clearLocal(this, "drink");
+			Toast.makeText(this, response, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Local drinks sent", Toast.LENGTH_LONG).show();
+		}
 	}
 
 }
