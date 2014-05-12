@@ -11,6 +11,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import croft.james.amulet.helpers.NetworkChecker;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;

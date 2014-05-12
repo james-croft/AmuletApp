@@ -12,6 +12,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import croft.james.amulet.helpers.NetworkChecker;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -56,7 +58,7 @@ public class SendHTTPDataAsync extends AsyncTask<String, Boolean, String> {
 			try{
 				se = new StringEntity(jsonObject);
 			} catch (Exception e) {
-				Log.e("log_tag", "Error in creating string entity "+e.toString());
+				Log.e("log_tag", "Error in creating string entity " + e.toString());
 			}
 
 			if(se != null) {

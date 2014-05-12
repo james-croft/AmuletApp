@@ -8,6 +8,10 @@ import java.util.Vector;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import croft.james.amulet.helpers.ImageResizer;
+import croft.james.amulet.helpers.LocalStorer;
+import croft.james.amulet.helpers.PaintHelper;
+
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
@@ -38,6 +42,7 @@ public class SequenceFragment extends Fragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 
 		getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		getActivity().setTitle("Sequence");
 
 		return new SequenceDrawView(getActivity());
 	}
@@ -94,14 +99,14 @@ public class SequenceFragment extends Fragment {
 		@Override
 		public void onTaskCompleted(String response) {
 			if(response == "") {
-				_sequenceTask.saveLocal(_context, "sequence");
+				LocalStorer.saveLocalJSONObject(_context, _sequenceTask.toJsonObject(), "sequence");
 				Toast.makeText(_context, "Couldn't send to server", Toast.LENGTH_LONG).show();
 				Toast.makeText(_context, "Stored locally", Toast.LENGTH_LONG).show();
 			} else if (response.toLowerCase().contains("drink")) {
-				drinkRecord.clearLocal(_context, "drink");
+				LocalStorer.clearLocalJSON(_context, "drink");
 				Toast.makeText(_context, response, Toast.LENGTH_LONG).show();
 			} else if (response.toLowerCase().contains("task")) {
-				_sequenceTask.clearLocal(_context, "sequence");
+				LocalStorer.clearLocalJSON(_context, "sequence");
 				Toast.makeText(_context, response, Toast.LENGTH_LONG).show();
 
 				getFragmentManager().popBackStackImmediate();
@@ -155,9 +160,9 @@ public class SequenceFragment extends Fragment {
 		@Override
 		public void drawSelectionButtons(Canvas canvas) {
 			_startGridBtn = new CanvasButton(BitmapFactory.decodeResource(getResources(), R.drawable.button_task));
-			_startGridBtn.destRect = new Rect(75, 50, _canvasWidth - 100, _startGridBtn.imageRect.bottom + 50);
+			_startGridBtn.destRect = new Rect(50, 50, _canvasWidth - 50, ImageResizer.calculateHeight(_canvasWidth - 100, _startGridBtn.image.getWidth(), _startGridBtn.image.getHeight()) + 50);
 			_calibBtn = new CanvasButton(BitmapFactory.decodeResource(getResources(), R.drawable.button_calibration));
-			_calibBtn.destRect = new Rect(75, 150, _canvasWidth - 100, _calibBtn.imageRect.bottom + 150);
+			_calibBtn.destRect = new Rect(50, _startGridBtn.destRect.bottom + 10, _canvasWidth - 50, ImageResizer.calculateHeight(_canvasWidth - 100, _calibBtn.image.getWidth(), _calibBtn.image.getHeight()) + (_startGridBtn.destRect.bottom + 10));
 
 			canvas.drawRect(_overlay, _strokePaint);
 			canvas.drawBitmap(_startGridBtn.image, _startGridBtn.imageRect, _startGridBtn.destRect, _strokePaint);
@@ -167,7 +172,7 @@ public class SequenceFragment extends Fragment {
 		@Override
 		public void drawCountdown(Canvas canvas) {
 			_textPaint = PaintHelper.setTextSizeForWidth(_textPaint, _canvasWidth - 100, 12f, _timerText);
-			canvas.drawText(_timerText, 50, _canvasHeight - 200, _textPaint);
+			canvas.drawText(_timerText, 50, _canvasHeight - 50, _textPaint);
 		}
 
 		@Override 
@@ -343,7 +348,7 @@ public class SequenceFragment extends Fragment {
 			task.Units = drinkRecord.Quantity;
 			
 			JSONObject sendObject = new JSONObject();
-			JSONArray taskArray = task.loadLocal(_context, "sequence");			
+			JSONArray taskArray = LocalStorer.getLocalJSONArray(_context, "sequence");
 			taskArray.put(task.toJsonObject());
 
 			String username = SharedPreferencesWrapper.getPref(_context, "Username", "");
@@ -400,7 +405,7 @@ public class SequenceFragment extends Fragment {
 					drinkRecord.TimeStamp = dateString;
 
 					JSONObject sendObject = new JSONObject();
-					JSONArray drinkArray = drinkRecord.loadLocal(activity, "drink");			
+					JSONArray drinkArray = LocalStorer.getLocalJSONArray(activity, "drink");
 					drinkArray.put(drinkRecord.toJsonObject());
 
 					String username = SharedPreferencesWrapper.getPref(activity, "Username", "");

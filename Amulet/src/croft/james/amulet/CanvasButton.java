@@ -27,6 +27,10 @@ public class CanvasButton {
 		destRect = destination;
 	}
 	
+	public boolean contains(CanvasButton button) {
+		return destRect.intersect(button.destRect);
+	}
+	
 	public boolean contains(Point point) { 
 		return destRect.contains(point.x, point.y);
 	}
@@ -37,5 +41,17 @@ public class CanvasButton {
 	
 	public boolean contains(float x, float y) {
 		return contains((int)x, (int)y);
+	}
+	
+	public void setCenter(int x, int y) {
+		destRect = new Rect(x - (imageRect.width() / 2), y - (imageRect.height() / 2), x + (imageRect.width() / 2), y + (imageRect.height() / 2));
+	}
+	
+	public Point destCenter() {
+		return new Point(destRect.centerX(), destRect.centerY());
+	}
+	
+	public Point center() {
+		return new Point(imageRect.centerX(), imageRect.centerY());
 	}
 }

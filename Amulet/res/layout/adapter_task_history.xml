@@ -7,7 +7,7 @@
     android:useDefaultMargins="true" >
 
     <TextView
-        android:id="@+id/drink_name"
+        android:id="@+id/task_name"
         android:layout_width="wrap_content"
         android:layout_height="26dp"
         android:singleLine="true"
@@ -15,7 +15,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/drink_quantity"
+        android:id="@+id/task_score"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_row="1"
@@ -23,7 +23,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/drink_timestamp"
+        android:id="@+id/task_timestamp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_row="2"

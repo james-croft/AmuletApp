@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:rowCount="5"
+                android:useDefaultMargins="true" >
+                
+                
+                <EditText
+                android:id="@+id/drink_percentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Drink percentage (%)"
+                android:layout_row="0"
+                android:inputType="number"
+                android:maxLines="1"
+                android:singleLine="true" />
+                
+                <EditText
+                android:id="@+id/drink_unit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Units per drink"
+                android:layout_row="1"
+                android:inputType="number"
+                android:maxLines="1"
+                android:singleLine="true" />
+                
+                <TextView
+                android:id="@+id/drink_quantity_separator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:layout_row="2"
+                android:text="Or:" />
+                
+                <EditText
+                android:id="@+id/drink_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Drink measure (ml)"
+                android:layout_row="3"
+                android:inputType="number"
+                android:maxLines="1"
+                android:singleLine="true" />
+                
+                <Button
+                android:id="@+id/convert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff6733a"
+                android:onClick="onBtnClicked"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:text="Convert"
+                android:textColor="#ffffffff" />
+            </GridLayout>
+
+</LinearLayout>

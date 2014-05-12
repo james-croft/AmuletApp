@@ -21,8 +21,10 @@
         <TextView
             android:id="@+id/textView1"
             android:layout_gravity="center_horizontal|bottom"
+            android:textSize="20sp"
             android:layout_row="1"
             android:text="Welcome to Amulet!" />
+       
     </GridLayout>
 
     <ScrollView

@@ -17,6 +17,10 @@
         <item name="home">Home</item>
         <item name="record_drink">Record drink</item>
         <item name="view_drink_diary">View Drink Diary</item>
+        <item name="view_task_history">View Task History</item>
+        <item name="account_manage">Manage account</item>
+        <item name="unit_calc">Unit calculator</item>
+        <item name="logout">Logout</item>
     </string-array>
 
 </resources>

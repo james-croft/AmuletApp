@@ -1,0 +1,11 @@
+{
+    "drinks": [
+        { "name": "Beer", "description": "568ml (pint)", "quantity": "568", "percent": "4.0" },
+        { "name": "Beer", "description": "330ml (bottle)", "quantity": "330", "percent": "5.0" },
+        { "name": "Cider", "description": "568ml (pint)", "quantity": "568", "percent": "4.5" },
+        { "name": "Wine", "description": "175ml (glass)", "quantity": "175", "percent": "13.0" },
+        { "name": "Champagne", "description": "125ml (glass)", "quantity": "125", "percent": "12.0" },
+        { "name": "Spirit", "description": "25ml (shot)", "quantity": "25", "percent": "40.0" },
+        { "name": "Alcopop", "description": "275ml (bottle)", "quantity": "275", "percent": "4.0" }
+    ]
+}
